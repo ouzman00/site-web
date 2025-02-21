@@ -1,5 +1,4 @@
-mapboxgl.accessToken =
-  "pk.eyJ1IjoibmluYW5vdW4iLCJhIjoiY2pjdHBoZGlzMnV4dDJxcGc5azJkbWRiYSJ9.o4dZRrdHcgVEKCveOXG1YQ";
+mapboxgl.accessToken = "pk.eyJ1IjoibmluYW5vdW4iLCJhIjoiY2pjdHBoZGlzMnV4dDJxcGc5azJkbWRiYSJ9.o4dZRrdHcgVEKCveOXG1YQ";
 
 var map = new mapboxgl.Map({
   container: "map",
@@ -8,6 +7,26 @@ var map = new mapboxgl.Map({
   zoom: 16.3,
   pitch: 45,
   bearing: 30,
+});
+
+// Ajout du contrôle de géolocalisation
+var geolocate = new mapboxgl.GeolocateControl({
+  positionOptions: {
+    enableHighAccuracy: true,
+  },
+  trackUserLocation: true,
+  showUserLocation: true,
+});
+
+// Ajouter le contrôle à la carte
+map.addControl(geolocate);
+
+// Démarrer la géolocalisation dès que la carte est chargée
+geolocate.on("geolocate", function (e) {
+  console.log("Géolocalisation activée:", e);
+  // Update point coordinates with geolocation
+  point.features[0].geometry.coordinates = [e.coords.longitude, e.coords.latitude];
+  map.getSource("point").setData(point);
 });
 
 var route = {
@@ -23,33 +42,38 @@ var route = {
           [-16.964384159135488, 14.407505866861184],
           [-16.96337716969775, 14.408288548044652],
           [-16.971479970814016, 14.420639423548284],
-          [-16.989044635686856, 14.469102109224767],
-          [-16.99575253841992, 14.494997448446878],
         ],
       },
     },
   ],
 };
 
-// A single point that animates along the route.
 var point = {
   type: "FeatureCollection",
   features: [
     {
       type: "Feature",
-      properties: { distance: 0 }, // Add a distance property
+      properties: { distance: 0 },
       geometry: {
         type: "Point",
-        coordinates: route.features[0].geometry.coordinates[0], // Initial position
+        coordinates: route.features[0].geometry.coordinates[0],
       },
     },
   ],
 };
 
+map.addControl(
+  new mapboxgl.ScaleControl({
+    maxWidth: 200,
+    unit: "metric",
+  }),
+  "bottom-left"
+);
+
 var lineDistance = turf.lineDistance(route.features[0], "kilometers");
 
 var arc = [];
-var steps = 50000;
+var steps = 30000;
 
 for (var i = 0; i < lineDistance; i += lineDistance / steps) {
   var segment = turf.along(route.features[0], i, "kilometers");
@@ -94,8 +118,8 @@ map.on("load", function () {
   });
 
   var distancePopup = new mapboxgl.Popup({
-    // closeButton: false,
-    // closeOnClick: false,
+    closeButton: false,
+    closeOnClick: false,
   });
 
   function animate() {
@@ -142,7 +166,7 @@ map.on("load", function () {
   document.getElementById("replay").addEventListener("click", function () {
     point.features[0].geometry.coordinates =
       route.features[0].geometry.coordinates[0];
-    point.features[0].properties.distance = 0; // Reset distance to 0
+    point.features[0].properties.distance = 0;
     map.getSource("point").setData(point);
     counter = 0;
     animate(counter);
@@ -194,3 +218,4 @@ map.on("load", function () {
     labelLayerId
   );
 });
+L.control.scale().addTo(map);

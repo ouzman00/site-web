@@ -21,3 +21,21 @@
 .overlay button:hover {
     background-color:#4ea0da;
 }
+
+/* Cible le contrôle d'échelle */
+.mapboxgl-ctrl-scale {
+  font-family: Arial, sans-serif;
+  background-color: rgba(0, 0, 0, 0.7); /* Fond semi-transparent */
+  color: white; /* Texte blanc */
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 14px; /* Taille de police personnalisée */
+}
+
+.mapboxgl-ctrl-scale .mapboxgl-ctrl-scale-line {
+  border-color: #00BFFF; /* Changer la couleur de la ligne de l'échelle */
+}
+
+.mapboxgl-ctrl-scale .mapboxgl-ctrl-scale-segment {
+  color: #00BFFF; /* Changer la couleur des segments de l'échelle */
+}
