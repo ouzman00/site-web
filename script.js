@@ -94,8 +94,8 @@ map.on("load", function () {
   });
 
   var distancePopup = new mapboxgl.Popup({
-    closeButton: false,
-    closeOnClick: false,
+    // closeButton: false,
+    // closeOnClick: false,
   });
 
   function animate() {
@@ -128,7 +128,7 @@ map.on("load", function () {
     // Show the distance traveled as a popup
     distancePopup
       .setLngLat(point.features[0].geometry.coordinates)
-      .setHTML(`<h4>Distance: ${point.features[0].properties.distance} km</h4>`)
+      .setHTML(`<h4> ${point.features[0].properties.distance} km</h4>`)
       .addTo(map);
 
     // Continue animation until the last step
